@@ -82,26 +82,44 @@ A channel is a named stream of data within a transporter. Each channel holds an 
 
 #### Chunk
 
-A chunk is a unit of data within a channel. It has a unique ID and a payload. Chunks are stored by the transporter and sent in sequence. When a renderer synchronizes, the transporter replays all chunks in order.
+A chunk is a unit of data within a channel. It has a unique ID, a _should_ statement, and data. Chunks are immutable and ordered, stored by the transporter, and sent in sequence. When a renderer synchronizes, the transporter replays all chunks in order.
+
+_should_ can be: `append`, `concatenate`, `merge`, or `replace`.
 
 ```clojure
 {:id "53e687e7-e9ec-4772-8c1e-fab729a022f9"
+ :should "concatenate"
  :data [0xDE 0xAD 0xBE 0xEF]}
 ```
 
 ```clojure
+{:id "58825405-014b-4c8a-afae-491feb1e01f6"
+ :should "concatenate"
+ :data [
+  {:at "2025-05-17 10:16:06.386" :value 0.37}
+  {:at "2025-05-17 10:16:06.386" :value 0.40}]}
+```
+
+```clojure
+{:id "9e806926-5de7-48bf-805c-8d16eb811e9c"
+ :should "append"
+ :data {:at "2025-05-17 10:16:06.386" :value 0.37}}
+```
+
+```clojure
 {:id "68bd7fad-9cbe-4c34-9a59-c67a1a4fcfaf"
+ :should "replace"
  :data "Hello World"}
 ```
 
 ```clojure
 {:id "9e806926-5de7-48bf-805c-8d16eb811e9c"
+ :should "replace"
  :data 2.5}
 ```
 
 ```clojure
-{:id "58825405-014b-4c8a-afae-491feb1e01f6"
- :data [
-  {:at "2025-05-17 10:16:06.386" :value 0.37}
-  {:at "2025-05-17 10:16:06.386" :value 0.40}]}
+{:id "9e806926-5de7-48bf-805c-8d16eb811e9c"
+ :should "merge"
+ :data {:color "purple" :size 2.5}}
 ```
